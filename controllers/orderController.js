@@ -11,16 +11,15 @@ const { number, statusPayment } = require('../constant/app');
 const create = async (req, res, next) => {
     try {
         const { delivery_address, cart, totalPrice, paymentInfo } = req.body;
-        const address = await DeliveryAddress.findById(delivery_address);
         const payloadOrder = new Order({
             _id: new Types.ObjectId(),
             status: statusPayment.PROCESSING,
             delivery_address: {
-                provinsi: address.provinsi,
-                kabupaten: address.kabupaten,
-                kecamatan: address.kecamatan,
-                kelurahan: address.kelurahan,
-                detail: address.detail
+                provinsi: delivery_address.provinsi,
+                kabupaten: delivery_address.kabupaten,
+                kecamatan: delivery_address.kecamatan,
+                kelurahan: delivery_address.kelurahan,
+                detail: delivery_address.detail
             },
             totalPrice: totalPrice,
             paymentInfo: paymentInfo,
