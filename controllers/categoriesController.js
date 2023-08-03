@@ -12,7 +12,11 @@ const create = async (req, res, next) => {
         const data = await payload.save();
         
         req.data = data;
-        next();
+        return res.status(201).json({
+            message: "CREATED SUCCESS",
+            status: 2001,
+            data: data
+        })
     } catch(err) {
         const error = new HttpError(GENERAL_ERROR_MESSAGE, GENERAL_ERROR_CODE, ERROR_SERVER);
         next(error)

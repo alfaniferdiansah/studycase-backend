@@ -3,7 +3,6 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 const logger = require('morgan');
 var indexRouter = require('./routes/index');
-const cors = require('cors');
 var app = express();
 const { NOT_FOUND_PATH } = require('./constant/errorCode');
 const { NOT_FOUND, ERROR_SERVER } = require('./constant/errorHttp');
@@ -15,28 +14,12 @@ var http = require('http');
 const db = require('./database/index')
 var debug = require('debug')('studycase-backend-ferdy:server');
 
-var allowedOrigins = [
-  "http://localhost:3000",
-  "https://mern-ecommerce-tawny.vercel.app"
-]
-
-app.use(cors({
-
-  origin: function(origin, callback){
-    
-    if(!origin) return callback(null, true);
-    if(allowedOrigins.indexOf(origin) === -1){
-      var msg = 'The CORS policy for this site does not ' +
-                'allow access from the specified Origin.';
-      return callback(new Error(msg), false);
-    }
-    return callback(null, true);
-  },
-
-  exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
-
-  credentials: true,
-}));
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000, https://mern-ecommerce-tawny.vercel.app");
+  res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, X-XSRF-TOKEN,Accept, Authorization");
+  next();
+});
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -73,7 +56,7 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-db.on('open', function(){
+db.on('open', function () {
   server.listen(port, () => {
     console.log(`server running in port ${port}`);
   })
@@ -140,9 +123,9 @@ function onListening() {
 
 app.use((error, req, res, next) => {
   if (res.headerSent) {
-      return next(error);
+    return next(error);
   }
-  res.status(error.status || ERROR_SERVER).json({ message : error.message, code: error.code });
+  res.status(error.status || ERROR_SERVER).json({ message: error.message, code: error.code });
 })
 
 

@@ -21,7 +21,7 @@ const productSchema = new Schema ({
 
     image: { 
         type: String, 
-        get: (data) => `${hostApp}:${portApp}/${product}`  + data
+        get: (data) => `https://studycase.vercel.app/${product}`  + data
     },
 
     category: {

@@ -1,10 +1,20 @@
-const mongoose = require('mongoose')
-const { dbUser, dbPass, dbHost, dbPort, dbName } = require('../config/index')
+const mongoose = require('mongoose');
 
-mongoose.connect(`mongodb://${dbUser}:${dbPass}@${dbHost}:${dbPort}/${dbName}?authSource=admin`)
+const connectionString = process.env.MONGO_URL;
 
-// mongoose.connect(`mongodb+srv://${dbUser}:${dbPass}@cluster0.t8yuaoi.mongodb.net/?retryWrites=true&w=majority`)
+const mongooseOptions = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+};
+
+mongoose.connect(connectionString, mongooseOptions)
+    .then(() => {
+        console.log('Connected to MongoDB Atlas!');
+    })
+    .catch((error) => {
+        console.error('Error connecting to MongoDB Atlas:', error);
+    });
 
 const db = mongoose.connection
 
-module.exports = db
+module.exports = db;
